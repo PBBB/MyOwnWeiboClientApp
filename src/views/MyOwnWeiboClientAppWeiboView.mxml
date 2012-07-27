@@ -1,7 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		xmlns:s="library://ns.adobe.com/flex/spark" title="Weibo">
+		xmlns:s="library://ns.adobe.com/flex/spark" title="Weibo" creationComplete="view1_creationCompleteHandler(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.sina.microblog.MicroBlog;
+			import com.sina.microblog.events.MicroBlogEvent;
+			
+			import mx.events.FlexEvent;
+			
+			import spark.components.ViewNavigator;
+			private var mb:MicroBlog;
+			protected function loginHd(event:MouseEvent):void
+			{
+				//mb.addEventListener(MicroBlogEvent.LOGIN_RESULT, onLoginResult);
+				//mb.login();
+				navigator.pushView(ViewLogin,[mb]);
+			}
+			
+			protected function view1_creationCompleteHandler(event:FlexEvent):void
+			{
+				mb=new MicroBlog();
+				mb.source="3096888594";
+				
+			}
+			
+			protected function onLoginResult(event:MicroBlogEvent):void
+			{
+				this.title="Logged In";
+			}
+			
+		]]>
+	</fx:Script>
+	
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
+	<s:actionContent>
+		<s:Button id="rightTop" label="登录" click="loginHd(event)"/>
+	</s:actionContent>
 </s:View>
