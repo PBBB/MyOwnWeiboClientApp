@@ -4,6 +4,7 @@
 	<fx:Script>
 		<![CDATA[
 			import com.sina.microblog.MicroBlog;
+			import com.sina.microblog.events.MicroBlogErrorEvent;
 			import com.sina.microblog.events.MicroBlogEvent;
 			
 			import mx.events.FlexEvent;
@@ -14,22 +15,57 @@
 			{
 				//mb.addEventListener(MicroBlogEvent.LOGIN_RESULT, onLoginResult);
 				//mb.login();
-				navigator.pushView(ViewLogin,[mb]);
+				var so:SharedObject=SharedObject.getLocal("aTK");
+				
+				 if(so.data.atk){
+					mb.access_token=so.data.atk;
+					onLogin();
+				}else{
+					navigator.pushView(ViewLogin,[mb]);
+					mb.login();
+				}
+				 
+				
+			}
+			private function testAPI():void
+			{
+				(this.data[0] as MicroBlog).addEventListener("callWeiboApiResult", callWeiboApiResult);
+				(this.data[0] as MicroBlog).addEventListener("callWeiboApiError", callWeiboApiError);
+				(this.data[0] as MicroBlog).callWeiboAPI("2/account/get_uid", null, "GET", "callWeiboApiResult", "callWeiboApiError"); 
 			}
 			
+			/**
+			 * 成功调用api
+			 */
+			private function callWeiboApiResult(e:MicroBlogEvent):void
+			{
+				trace("uid:"+e.result.uid); //按照线上文档返回格式格式： {"uid":"3456676543"}
+				label.text="uid:"+e.result.uid;
+			}
+			
+			/**
+			 * 调用api失败，获取服务器返回的错误信息
+			 */
+			private function callWeiboApiError(e:MicroBlogErrorEvent):void
+			{
+				trace(e.message);
+			}
 			protected function view1_creationCompleteHandler(event:FlexEvent):void
 			{
 				mb=new MicroBlog();
 				mb.source="3096888594";
-				mb.isTrustDomain=true;
 				mb.consumerKey="3096888594";
 				mb.consumerSecret="3a154d0a7ee07e0db0f33cc09bd263cc";
+				
 			}
 			
-			protected function onLoginResult(event:MicroBlogEvent):void
+			protected function onLogin():void
 			{
 				this.title="Logged In";
+				testAPI();
 			}
+			
+			
 			
 		]]>
 	</fx:Script>
@@ -39,4 +75,6 @@
 	<s:actionContent>
 		<s:Button id="rightTop" label="登录" click="loginHd(event)"/>
 	</s:actionContent>
+	<s:Label id="label" left="0" right="0" top="0" bottom="0" horizontalCenter="0" text=""
+			 verticalCenter="0"/>
 </s:View>

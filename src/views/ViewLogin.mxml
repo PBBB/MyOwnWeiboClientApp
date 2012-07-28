@@ -7,6 +7,8 @@
 			import com.sina.microblog.events.MicroBlogErrorEvent;
 			import com.sina.microblog.events.MicroBlogEvent;
 			
+			import mx.events.FlexEvent;
+			
 			protected function buttonback_clickHandler(event:MouseEvent):void
 			{
 				navigator.popView();
@@ -14,26 +16,50 @@
 			
 			protected function loginHd(event:MouseEvent):void
 			{
-				(this.data[0] as MicroBlog).addEventListener(MicroBlogEvent.ANYWHERE_TOKEN_RESULT, loggedInHd);
-				//(this.data[0] as MicroBlog).addEventListener(MicroBlogErrorEvent.VERIFY_CREDENTIALS_ERROR, logerrHd);
-				(this.data[0] as MicroBlog).login(null,null,true);
+				
+				(this.data[0] as MicroBlog).access_token=token.text;
+				
+				if(isAutoLogin.selected){
+					var so:SharedObject=SharedObject.getLocal("aTK");
+					so.data.atk=(this.data[0] as MicroBlog).access_token;
+				}else{
+					so.clear();
+				}
+				navigator.popView();
+				
+				
+				//testAPI();
+				
+				//(this.data[0] as MicroBlog).verifyCredentials();
 				prog.text="logging";
 			}
-			
-			protected function loggedInHd(e:MicroBlogEvent):void
+			private function testAPI():void
 			{
-				//(this.data[0] as MicroBlog).removeEventListener(MicroBlogEvent.VERIFY_CREDENTIALS_RESULT, loggedInHd);
-				//(this.data[0] as MicroBlog).removeEventListener(MicroBlogErrorEvent.VERIFY_CREDENTIALS_ERROR, logerrHd);
-				navigator.popView();
-				prog.text="logged";
+				(this.data[0] as MicroBlog).addEventListener("callWeiboApiResult", callWeiboApiResult);
+				(this.data[0] as MicroBlog).addEventListener("callWeiboApiError", callWeiboApiError);
+				(this.data[0] as MicroBlog).callWeiboAPI("2/account/get_uid", null, "GET", "callWeiboApiResult", "callWeiboApiError"); 
 			}
 			
-			protected function logerrHd(e:MicroBlogErrorEvent):void
+			/**
+			 * 成功调用api
+			 */
+			private function callWeiboApiResult(e:MicroBlogEvent):void
 			{
-				pin.text="";
-				prog.text="log in failed";
+				trace("uid:"+e.result.uid); //按照线上文档返回格式格式： {"uid":"3456676543"}
+				prog.text="uid:"+e.result.uid;
 			}
 			
+			/**
+			 * 调用api失败，获取服务器返回的错误信息
+			 */
+			private function callWeiboApiError(e:MicroBlogErrorEvent):void
+			{
+				trace(e.message);
+			}
+			
+			
+			
+						
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -45,10 +71,10 @@
 	<s:VGroup left="0" right="0" top="0" bottom="0" gap="20" 
 			  horizontalCenter="0" paddingBottom="10" paddingLeft="20" paddingRight="20"
 			  paddingTop="30" verticalCenter="0">
-		<s:TextInput id="pin" width="100%" prompt="请输入得到的PIN码" softKeyboardType="number" returnKeyLabel="go" displayAsPassword="true" enter="loginHd(null)"/>
-		<s:CheckBox label="自动登录" selected="true"/>
+		<s:TextInput id="token" width="100%" prompt="请输入得到的token" softKeyboardType="email" returnKeyLabel="go" enter="loginHd(null)"/>
+		<s:CheckBox id="isAutoLogin" label="自动登录" selected="true"/>
 		<s:HGroup width="100%" gap="15" verticalAlign="middle">
-			<s:Button width="232" label="Log in" click="loginHd(event)" />
+			<s:Button width="232" label="登录" click="loginHd(event)" />
 			<s:Label id="prog" text=""/>
 		</s:HGroup>
 	</s:VGroup>
