@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
-		xmlns:s="library://ns.adobe.com/flex/spark"
-		actionBarVisible="true" overlayControls="false" tabBarVisible="true" title="Log in to Sina Weibo">
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" title="Log in to Sina Weibo">
 	<fx:Script>
 		<![CDATA[
-			
+			import com.sina.microblog.MicroBlog;
+			import com.sina.microblog.events.MicroBlogErrorEvent;
+			import com.sina.microblog.events.MicroBlogEvent;
 			
 			protected function buttonback_clickHandler(event:MouseEvent):void
 			{
@@ -13,7 +14,24 @@
 			
 			protected function loginHd(event:MouseEvent):void
 			{
-				//this.data
+				(this.data[0] as MicroBlog).addEventListener(MicroBlogEvent.ANYWHERE_TOKEN_RESULT, loggedInHd);
+				//(this.data[0] as MicroBlog).addEventListener(MicroBlogErrorEvent.VERIFY_CREDENTIALS_ERROR, logerrHd);
+				(this.data[0] as MicroBlog).login(null,null,true);
+				prog.text="logging";
+			}
+			
+			protected function loggedInHd(e:MicroBlogEvent):void
+			{
+				//(this.data[0] as MicroBlog).removeEventListener(MicroBlogEvent.VERIFY_CREDENTIALS_RESULT, loggedInHd);
+				//(this.data[0] as MicroBlog).removeEventListener(MicroBlogErrorEvent.VERIFY_CREDENTIALS_ERROR, logerrHd);
+				navigator.popView();
+				prog.text="logged";
+			}
+			
+			protected function logerrHd(e:MicroBlogErrorEvent):void
+			{
+				pin.text="";
+				prog.text="log in failed";
 			}
 			
 		]]>
@@ -27,9 +45,11 @@
 	<s:VGroup left="0" right="0" top="0" bottom="0" gap="20" 
 			  horizontalCenter="0" paddingBottom="10" paddingLeft="20" paddingRight="20"
 			  paddingTop="30" verticalCenter="0">
-		<s:TextInput width="100%" prompt="邮箱/会员帐号/微号/手机号" softKeyboardType="email" returnKeyLabel="next" enter="pw.setFocus()"/>
-		<s:TextInput id="pw" width="100%" prompt="请输入密码" softKeyboardType="email" returnKeyLabel="go" displayAsPassword="true" enter="loginHd(null)"/>
-		<s:CheckBox label="Auto log in" selected="true"/>
-		<s:Button width="232" label="Log in" click="loginHd(event)"/>
+		<s:TextInput id="pin" width="100%" prompt="请输入得到的PIN码" softKeyboardType="number" returnKeyLabel="go" displayAsPassword="true" enter="loginHd(null)"/>
+		<s:CheckBox label="自动登录" selected="true"/>
+		<s:HGroup width="100%" gap="15" verticalAlign="middle">
+			<s:Button width="232" label="Log in" click="loginHd(event)" />
+			<s:Label id="prog" text=""/>
+		</s:HGroup>
 	</s:VGroup>
 </s:View>
