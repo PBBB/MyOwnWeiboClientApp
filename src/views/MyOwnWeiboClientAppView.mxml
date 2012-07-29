@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		xmlns:s="library://ns.adobe.com/flex/spark" title="Sina Weibo" creationComplete="view1_creationCompleteHandler(event)">
+		xmlns:s="library://ns.adobe.com/flex/spark" title="PBB的打火机" creationComplete="view1_creationCompleteHandler(event)">
 	<fx:Script>
 		<![CDATA[
+			import com.greensock.TweenLite;
 			import com.sina.microblog.MicroBlog;
 			import com.sina.microblog.events.MicroBlogErrorEvent;
 			import com.sina.microblog.events.MicroBlogEvent;
@@ -11,18 +12,19 @@
 			
 			import spark.components.ViewNavigator;
 			private var mb:MicroBlog;
+			//private var roll:CameraRoll=new CameraRoll();
 			protected function loginHd(event:MouseEvent):void
 			{
 				//mb.addEventListener(MicroBlogEvent.LOGIN_RESULT, onLoginResult);
 				//mb.login();
 				var so:SharedObject=SharedObject.getLocal("aTK");
-				
+				so.clear();
 				 if(so.data.atk){
 					mb.access_token=so.data.atk;
 					onLogin();
 				}else{
 					navigator.pushView(ViewLogin,[mb]);
-					mb.login();
+					//mb.login();
 				}
 				 
 				
@@ -40,7 +42,7 @@
 			private function callWeiboApiResult(e:MicroBlogEvent):void
 			{
 				trace("uid:"+e.result.uid); //按照线上文档返回格式格式： {"uid":"3456676543"}
-				label.text="uid:"+e.result.uid;
+				
 			}
 			
 			/**
@@ -73,8 +75,29 @@
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
 	<s:actionContent>
-		<s:Button id="rightTop" label="登录" click="loginHd(event)"/>
+		<s:Button id="rightTop" label="帐号设置" click="loginHd(event)"/>
 	</s:actionContent>
-	<s:Label id="label" left="0" right="0" top="0" bottom="0" horizontalCenter="0" text=""
-			 verticalCenter="0"/>
+	<s:VGroup left="0" right="0" top="0" bottom="0" horizontalCenter="0" gap="10" 
+			  paddingBottom="10" paddingLeft="20" paddingRight="20"
+			  paddingTop="20" verticalCenter="0">
+		<s:TextArea id="contentArea" focusIn="TweenLite.to(contentArea, 0.3, {height:'+=150'})"
+					focusOut="TweenLite.to(contentArea, 0.3, {height:'-=150'})"/>
+		<s:HGroup width="100%">
+			<s:Button label="拍照"/>
+			
+			<s:Spacer width="100%" height="100%"/>
+			<s:Button label="发送"/>
+		</s:HGroup>
+		<s:Spacer width="100%" height="30"/>
+		<s:HGroup width="100%" verticalAlign="middle">
+			<s:Label text="新浪微博"/>
+			<s:Spacer width="100%" height="100%"/>
+			<s:ToggleSwitch selected="true"/>
+		</s:HGroup>
+		<s:HGroup width="100%" verticalAlign="middle">
+			<s:Label text="腾讯微博"/>
+			<s:Spacer width="100%" height="100%"/>
+			<s:ToggleSwitch enabled="false" selected="false"/>
+		</s:HGroup>
+	</s:VGroup>
 </s:View>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		xmlns:s="library://ns.adobe.com/flex/spark" title="Log in to Sina Weibo">
+		xmlns:s="library://ns.adobe.com/flex/spark" title="帐号设置">
 	<fx:Script>
 		<![CDATA[
 			import com.sina.microblog.MicroBlog;
@@ -26,56 +26,55 @@
 					so.clear();
 				}
 				navigator.popView();
-				
-				
+				trace(getTokenFromURL(token.text));
+				trace(getRemindFromURL(token.text));
 				//testAPI();
 				
 				//(this.data[0] as MicroBlog).verifyCredentials();
-				prog.text="logging";
+
 			}
-			private function testAPI():void
-			{
-				(this.data[0] as MicroBlog).addEventListener("callWeiboApiResult", callWeiboApiResult);
-				(this.data[0] as MicroBlog).addEventListener("callWeiboApiError", callWeiboApiError);
-				(this.data[0] as MicroBlog).callWeiboAPI("2/account/get_uid", null, "GET", "callWeiboApiResult", "callWeiboApiError"); 
+			private function getTokenFromURL(url:String):String{
+				
+				//url.indexOf("access_token");
+				return url.substring(url.indexOf("access_token=")+"access_token=".length,url.indexOf("&remind"));
 			}
-			
-			/**
-			 * 成功调用api
-			 */
-			private function callWeiboApiResult(e:MicroBlogEvent):void
-			{
-				trace("uid:"+e.result.uid); //按照线上文档返回格式格式： {"uid":"3456676543"}
-				prog.text="uid:"+e.result.uid;
+			private function getRemindFromURL(url:String):int{
+				return parseInt(
+					url.substring(url.indexOf("remind_in=")+"remind_in=".length,url.indexOf("&expires")));
 			}
 			
-			/**
-			 * 调用api失败，获取服务器返回的错误信息
-			 */
-			private function callWeiboApiError(e:MicroBlogErrorEvent):void
-			{
-				trace(e.message);
-			}
 			
 			
 			
 						
+			protected function token_clickHandler(event:MouseEvent):void
+			{
+				(this.data[0] as MicroBlog).login();
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
 	<s:navigationContent>
-		<s:Button label="&lt; Weibo" click="buttonback_clickHandler(event)"/>
+		<s:Button label="&lt; 打火机" click="buttonback_clickHandler(event)"/>
 	</s:navigationContent>
-	<s:VGroup left="0" right="0" top="0" bottom="0" gap="20" 
+	<s:VGroup left="0" right="0" top="0" bottom="0" gap="15" 
 			  horizontalCenter="0" paddingBottom="10" paddingLeft="20" paddingRight="20"
 			  paddingTop="30" verticalCenter="0">
-		<s:TextInput id="token" width="100%" prompt="请输入得到的token" softKeyboardType="email" returnKeyLabel="go" enter="loginHd(null)"/>
-		<s:CheckBox id="isAutoLogin" label="自动登录" selected="true"/>
 		<s:HGroup width="100%" gap="15" verticalAlign="middle">
-			<s:Button width="232" label="登录" click="loginHd(event)" />
-			<s:Label id="prog" text=""/>
+			<s:Label text="新浪微博"/>
+			<s:Label text="（未登录）"/>
+			<s:Spacer width="100%" height="100%"/>
+			<s:Button width="193" label="获取token" click="token_clickHandler(event)"/>
+		</s:HGroup>
+		<s:TextInput id="token" width="100%" prompt="请输入登录后的网址" softKeyboardType="email" 
+					 returnKeyLabel="go" enter="loginHd(null)"/>
+		<s:HGroup width="100%" gap="15" verticalAlign="middle">
+			<s:CheckBox id="isAutoLogin" label="自动登录" selected="true"/>
+			<s:Spacer width="100%" height="100%"/>
+			<s:Button width="128" label="登录" click="loginHd(event)" />
 		</s:HGroup>
 	</s:VGroup>
 </s:View>
