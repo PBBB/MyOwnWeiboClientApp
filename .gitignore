@@ -7,3 +7,7 @@ bin-release/
 .flexProperties
 .settings/
 .project
+
+#output files
+.apk
+.ipa
