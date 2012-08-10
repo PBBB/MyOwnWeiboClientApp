@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		xmlns:s="library://ns.adobe.com/flex/spark" title="PBB的打火机" creationComplete="view1_creationCompleteHandler(event)">
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:display="com.greensock.loading.display.*"
+		creationComplete="view1_creationCompleteHandler(event)" title="PBB的打火机">
 	<fx:Script>
 		<![CDATA[
 			import com.greensock.TweenLite;
@@ -77,27 +79,41 @@
 	<s:actionContent>
 		<s:Button id="rightTop" label="帐号设置" click="loginHd(event)"/>
 	</s:actionContent>
-	<s:VGroup left="0" right="0" top="0" bottom="0" horizontalCenter="0" gap="10" 
-			  paddingBottom="10" paddingLeft="20" paddingRight="20"
+	
+		<s:VGroup id="vgroupmain" left="0" right="0" top="0" bottom="0" horizontalCenter="0" gap="0" 
+			  paddingBottom="10" paddingLeft="0" paddingRight="0"
 			  paddingTop="20" verticalCenter="0">
-		<s:TextArea id="contentArea" focusIn="TweenLite.to(contentArea, 0.3, {height:'+=150'})"
-					focusOut="TweenLite.to(contentArea, 0.3, {height:'-=150'})"/>
-		<s:HGroup width="100%">
+		
+			<s:HGroup width="100%" paddingBottom="10" paddingLeft="20" paddingRight="20">
+		<s:TextArea  id="contentArea" focusIn="TweenLite.to(contentArea, 0.3, {height:256})"
+					focusOut="TweenLite.to(contentArea, 0.3, {height:106})"/>
+				</s:HGroup>
+		<s:HGroup width="100%" paddingBottom="10" paddingLeft="20" paddingRight="20">
 			<s:Button label="拍照"/>
 			
 			<s:Spacer width="100%" height="100%"/>
 			<s:Button label="发送"/>
 		</s:HGroup>
-		<s:Spacer width="100%" height="30"/>
-		<s:HGroup width="100%" verticalAlign="middle">
-			<s:Label text="新浪微博"/>
-			<s:Spacer width="100%" height="100%"/>
-			<s:ToggleSwitch selected="true"/>
-		</s:HGroup>
-		<s:HGroup width="100%" verticalAlign="middle">
-			<s:Label text="腾讯微博"/>
-			<s:Spacer width="100%" height="100%"/>
-			<s:ToggleSwitch enabled="false" selected="false"/>
-		</s:HGroup>
+			
+				<s:Rect width="100%" height="20">
+				<s:fill>
+					<s:BitmapFill fillMode="repeat" source="@Embed('../media/bg.png')"/>
+				</s:fill>
+			</s:Rect>
+			
+			
+		<s:List width="100%" height="100%" pageScrollingEnabled="true" scrollSnappingMode="leadingEdge" itemRenderer="renders.listItemRenderer">
+			<s:dataProvider> 
+				<s:ArrayCollection> 
+					<fx:Object username="請叫我_糾結帝" datetime="今天20:02" message="@PBBPBB //@李彤-Ltcmdr: 猫师徒の旅行,Let's travel together" originMsg="@快乐淘萌物：猫师徒の旅行，突然好想去远方旅行，带我走吧！ @快乐淘萌物"/>
+					<fx:Object username="金色灬闪光_" datetime="8月6日19:59" message="@PBBPBB //@孙艺洲: 希望有机会再次披上吕布的战袍//@韦正: #爱情公寓3# 决战紫禁之巅 精华版 先转再看!" originMsg="@汪远wangyuan：[#爱情公寓3# 特典──紫禁之巅 完整超清珍藏] 因为当初不必要的执着，才有了这场戏。why？─why not！电影版─to be continued。@韦正 @娄艺潇 @王传君 @孙艺洲 @邓家佳 @陈赫 @李金铭Kimi @金世佳 @李佳航JEAN @橘酷卡视效工作室 @麦田里的草帽人 @z土到掉渣z http://t.cn/zW0sdrx"/> 
+					<fx:Object username="临渊跳河" datetime="8月3日08:31" message="求抽奖@trick-or-trick @PBBPBB @雅利安之翼" originMsg="@榕榕童鞋：上海交通广播《欢乐早高峰》7:30 - 10:30 转发@ 三好友抽取：@一兆韦德健身 提供百老汇音乐剧《猫》演员同款专属T恤2件！ @上海苏宁电器 100元储值卡1张！活动：8月5日 “欢乐星期八，挑战主持人”亲子场抓紧时间报名哟,每人到场！@星期8小镇 报名4008205066 或 http://t.cn/zWV5ZYI"/>
+				</s:ArrayCollection> 
+			</s:dataProvider> 
+		</s:List>
+		
 	</s:VGroup>
+
+	
+	
 </s:View>
