@@ -57,10 +57,11 @@
 			protected function view1_creationCompleteHandler(event:FlexEvent):void
 			{
 				mb=new MicroBlog();
-				mb.source="3096888594";
-				mb.consumerKey="3096888594";
-				mb.consumerSecret="3a154d0a7ee07e0db0f33cc09bd263cc";
-				
+				//
+				mb.source="1111";
+				mb.consumerKey="1111";
+				mb.consumerSecret="1111";
+				//
 			}
 			
 			protected function onLogin():void
